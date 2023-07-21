@@ -9,7 +9,11 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface EventRepository extends CrudRepository<Event,Integer> {
+public interface EventRepository extends CrudRepository<Event, Integer> {
+
+    List<Event> findAllByVenue(Venue venue);
+
+    List<Event> findAllByEventType(EventType eventType);
 
     List<Event> findAllByVenueAndEventType(Venue venue, EventType eventType);
 }

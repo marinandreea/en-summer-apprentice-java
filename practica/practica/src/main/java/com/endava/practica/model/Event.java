@@ -36,6 +36,4 @@ public class Event implements Serializable {
     @Column(name = "end_date")
     private LocalDateTime endDate;
 
-
-
 }

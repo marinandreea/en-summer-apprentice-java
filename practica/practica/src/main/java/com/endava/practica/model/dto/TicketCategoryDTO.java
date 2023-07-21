@@ -16,7 +16,7 @@ public class TicketCategoryDTO {
     private double price;
 
     @Override
-    public String toString(){
+    public String toString() {
         return "{\n" +
                 "id: " + ticketCategoryId + "\n" +
                 "description: " + description + "\n" +

@@ -13,8 +13,9 @@ public class VenueController {
 
     @Autowired
     private VenueService venueService;
+
     @GetMapping("/api/venues")
-    public List<Venue> getAllUsers2(){
+    public List<Venue> getAllVenues() {
         return venueService.getVenues();
     }
 }

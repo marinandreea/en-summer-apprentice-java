@@ -5,6 +5,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
 public class EventDTO {
 
     private int eventId;
-    private Venue venue;
+    private VenueDTO venue;
     private String eventType;
     private String description;
     private String name;
@@ -24,7 +25,7 @@ public class EventDTO {
     private List<TicketCategoryDTO> ticketCategoriesForEvent;
 
     @Override
-    public String toString(){
+    public String toString() {
         return "{\n"
                 + "id: " + eventId + ",\n"
                 + venue.toString() + ",\n"

@@ -1,13 +1,18 @@
 package com.endava.practica.service;
 
+
 import com.endava.practica.model.Event;
 import com.endava.practica.model.EventType;
 import com.endava.practica.model.Venue;
-import com.endava.practica.model.dto.EventDTO;
 import com.endava.practica.repository.EventRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.util.Pair;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class EventService {
@@ -18,30 +23,45 @@ public class EventService {
     @Autowired
     private EventTypeService eventTypeService;
 
-    public  EventDTO eventToDTO(Event event){
-        return EventDTO.builder()
-                .eventId(event.getEventID())
-                .venue(event.getVenue())
-                .eventType(event.getEventType().getName())
-                .description(event.getDescription())
-                .name(event.getName())
-                .startDate(event.getStartDate())
-                .endDate(event.getEndDate()).build();
+    public Event getEventById(int eventId) {
+        Optional<Event> event = eventRepository.findById(eventId);
+        if (event.isPresent()) {
+            return event.get();
+        } else {
+            return new Event();
+        }
     }
 
-    public Event getEventById(int eventId){
-        return eventRepository.findById(eventId).get();
+    public List<Event> getEvents() {
+        List<Event> events = new ArrayList<>();
+        Iterable<Event> eventIterable = eventRepository.findAll();
+        eventIterable.forEach(events::add);
+        return events;
     }
+
+    public List<Event> getEventsByVenueId(int venueId) {
+        Optional<Venue> venue = venueService.getVenueById(venueId);
+        if (venue.isPresent()) {
+            return eventRepository.findAllByVenue(venue.get());
+        }
+        return new ArrayList<>();
+    }
+
+    public List<Event> getEventsByEventType(String type) {
+        EventType eventType = eventTypeService.getEventTypeByType(type);
+        return eventRepository.findAllByEventType(eventType);
+    }
+
 
     public List<Event> getEventsByVenueIdAndEventType(int venueId, String type) {
 
-        Venue venue = venueService.getVenueById(venueId).get();
-        EventType eventType = eventTypeService.getEventTypeByType(type);
-
-        if(venue != null && eventType != null){
-            return eventRepository.findAllByVenueAndEventType(venue,eventType);
+        Optional<Venue> venue = venueService.getVenueById(venueId);
+        if (venue.isPresent()) {
+            EventType eventType = eventTypeService.getEventTypeByType(type);
+            return eventRepository.findAllByVenueAndEventType(venue.get(), eventType);
         }
-        return  null;
+
+        return new ArrayList<>();
     }
 
 }

@@ -27,12 +27,5 @@ public class Venue implements Serializable {
     @Column
     private int capacity;
 
-    @Override
-    public String toString(){
-        return "{\n"
-                + "venueID: " + venueID + ",\n"
-                + "type: " + type + ",\n"
-                + "location: " + location + ",\n"
-                + "capacity: " + capacity + "\n}";
-    }
+
 }
