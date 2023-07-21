@@ -1,6 +1,5 @@
 package com.endava.practica.service;
 
-import com.endava.practica.model.Order;
 import com.endava.practica.model.Venue;
 import com.endava.practica.repository.VenueRepository;
 import org.springframework.beans.factory.annotation.Autowired;

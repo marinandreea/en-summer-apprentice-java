@@ -1,6 +1,5 @@
 package com.endava.practica.model.dto;
 
-import com.endava.practica.model.Venue;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

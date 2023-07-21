@@ -1,15 +1,12 @@
 package com.endava.practica.service;
 
-import com.endava.practica.model.Order;
 import com.endava.practica.model.TicketCategory;
-import com.endava.practica.model.dto.TicketCategoryDTO;
 import com.endava.practica.repository.TicketCategoryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class TicketCategoryService {
