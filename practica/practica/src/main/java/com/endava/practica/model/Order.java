@@ -40,4 +40,8 @@ public class Order implements Serializable {
     private int numberOfTickets;
     @Column(name = "total_price")
     private double totalPrice;
+
+    public Order(int orderId) {
+        orderID = orderId;
+    }
 }

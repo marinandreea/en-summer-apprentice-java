@@ -4,8 +4,6 @@ import com.endava.practica.model.Order;
 import com.endava.practica.model.Venue;
 import com.endava.practica.model.dto.OrderDTO;
 import com.endava.practica.repository.OrderRepository;
-import com.endava.practica.repository.TicketCategoryRepository;
-import com.endava.practica.repository.UserRepository;
 import com.endava.practica.repository.VenueRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -22,15 +20,6 @@ public class OrderService {
     @Autowired
     private VenueRepository venueRepository;
 
-    public OrderDTO orderToDTO(Order order) {
-        return OrderDTO.builder()
-                .eventId(order.getTicketCategory().getEvent().getEventID())
-                .timestamp(order.getOrderedAt())
-                .ticketCategoryId(order.getTicketCategory().getTicketCategoryID())
-                .numberOfTickets(order.getNumberOfTickets())
-                .totalPrice(order.getTotalPrice()).build();
-    }
-
 
     public List<Order> getOrders() {
 
@@ -40,7 +29,8 @@ public class OrderService {
         return orders;
     }
 
-    public String createOrder(Order order) {
+    //am get
+    public String createOrder(Order order, OrderDTO orderDTO) {
 
         Optional<Venue> venue = venueRepository.findById(order.getTicketCategory().getEvent().getVenue().getVenueID());
         if (venue.isPresent()) {
@@ -49,13 +39,32 @@ public class OrderService {
                 venue.get().setCapacity(newCapacity);
                 venueRepository.save(venue.get());
                 orderRepository.save(order);
-                return "order: " + orderToDTO(order);
+                return "order: " + orderDTO;
             } else {
-                return "Not enough tickets left! There are only " + venue.get().getCapacity() + " tickets available!";
+                return "Error: Not enough tickets left! There are only " + venue.get().getCapacity() + " tickets available!";
             }
         }
-        return "Order could not be created!";
+        return "Error: Order could not be created!";
     }
+
+//    public String createOrder(Order order,OrderDTO orderDTO) {
+//
+//        Optional<Venue> venue = venueRepository.findById(order.getTicketCategory().getEvent().getVenue().getVenueID());
+//        if (venue.isPresent()) {
+//            int newCapacity = venue.get().getCapacity() - order.getNumberOfTickets();
+//            if (newCapacity >= 0) {
+//                venue.get().setCapacity(newCapacity);
+//                venueRepository.save(venue.get());
+//                orderRepository.save(order);
+//                return "order: " + orderDTO;
+//            } else {
+//                Error error = new Error("Not enough tickets left! There are only " + + venue.get().getCapacity() + " tickets available!");
+//                return new ResponseEntity<>(error,HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//        }
+//        Error error = new Error("Order could not be created");
+//        return new ResponseEntity<>(error,HttpStatus.INTERNAL_SERVER_ERROR);
+//    }
 
 
 }
