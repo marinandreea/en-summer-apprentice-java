@@ -33,12 +33,12 @@ public class TicketCategoryController {
         return ticketCategoryDTOList;
     }
 
-    @GetMapping("/api/ticketCategories")
+    @GetMapping("/ticketCategories")
     public List<TicketCategory> getAllTicketCategories() {
         return ticketCategoryService.getTicketCategories();
     }
 
-    @GetMapping("/api/ticketCategories/{eventId}")
+    @GetMapping("/ticketCategories/{eventId}")
     public List<TicketCategoryDTO> getAllTicketCategoriesByEventId(@PathVariable int eventId) {
         List<TicketCategoryDTO> ticketCategoryDTOList = new ArrayList<>();
         List<TicketCategory> ticketCategoryList = ticketCategoryService.getTicketCategoriesByEventId(eventId);

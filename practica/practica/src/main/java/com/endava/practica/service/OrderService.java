@@ -29,8 +29,7 @@ public class OrderService {
         return orders;
     }
 
-    //am get
-    public String createOrder(Order order, OrderDTO orderDTO) {
+    public Optional<OrderDTO> createOrder(Order order, OrderDTO orderDTO) {
 
         Optional<Venue> venue = venueRepository.findById(order.getTicketCategory().getEvent().getVenue().getVenueID());
         if (venue.isPresent()) {
@@ -39,32 +38,10 @@ public class OrderService {
                 venue.get().setCapacity(newCapacity);
                 venueRepository.save(venue.get());
                 orderRepository.save(order);
-                return "order: " + orderDTO;
-            } else {
-                return "Error: Not enough tickets left! There are only " + venue.get().getCapacity() + " tickets available!";
+                return Optional.of(orderDTO);
             }
         }
-        return "Error: Order could not be created!";
+        return Optional.empty();
     }
-
-//    public String createOrder(Order order,OrderDTO orderDTO) {
-//
-//        Optional<Venue> venue = venueRepository.findById(order.getTicketCategory().getEvent().getVenue().getVenueID());
-//        if (venue.isPresent()) {
-//            int newCapacity = venue.get().getCapacity() - order.getNumberOfTickets();
-//            if (newCapacity >= 0) {
-//                venue.get().setCapacity(newCapacity);
-//                venueRepository.save(venue.get());
-//                orderRepository.save(order);
-//                return "order: " + orderDTO;
-//            } else {
-//                Error error = new Error("Not enough tickets left! There are only " + + venue.get().getCapacity() + " tickets available!");
-//                return new ResponseEntity<>(error,HttpStatus.INTERNAL_SERVER_ERROR);
-//            }
-//        }
-//        Error error = new Error("Order could not be created");
-//        return new ResponseEntity<>(error,HttpStatus.INTERNAL_SERVER_ERROR);
-//    }
-
 
 }

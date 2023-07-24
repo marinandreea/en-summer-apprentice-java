@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Objects;
+
 @Data
 @Builder
 @NoArgsConstructor
@@ -23,5 +25,17 @@ public class VenueDTO {
                 + "type: " + type + ",\n"
                 + "location: " + location + ",\n"
                 + "capacity: " + capacity + "\n}";
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof VenueDTO venueDTO)) return false;
+        return getVenueId() == venueDTO.getVenueId() && getCapacity() == venueDTO.getCapacity() && getLocation().equals(venueDTO.getLocation()) && getType().equals(venueDTO.getType());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getVenueId(), getLocation(), getType(), getCapacity());
     }
 }

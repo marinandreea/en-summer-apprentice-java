@@ -8,7 +8,7 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface TicketCategoryRepository extends CrudRepository<TicketCategory,Integer> {
+public interface TicketCategoryRepository extends CrudRepository<TicketCategory, Integer> {
 
     List<TicketCategory> getAllByEvent(Event event);
 }

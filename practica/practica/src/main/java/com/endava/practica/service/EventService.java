@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -21,13 +22,9 @@ public class EventService {
     @Autowired
     private EventTypeService eventTypeService;
 
-    public Event getEventById(int eventId) {
-        Optional<Event> event = eventRepository.findById(eventId);
-        if (event.isPresent()) {
-            return event.get();
-        } else {
-            return new Event();
-        }
+    public Optional<Event> getEventById(int eventId) {
+        return eventRepository.findById(eventId);
+
     }
 
     public List<Event> getEvents() {
@@ -42,7 +39,7 @@ public class EventService {
         if (venue.isPresent()) {
             return eventRepository.findAllByVenue(venue.get());
         }
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
     public List<Event> getEventsByEventType(String type) {
@@ -59,7 +56,7 @@ public class EventService {
             return eventRepository.findAllByVenueAndEventType(venue.get(), eventType);
         }
 
-        return new ArrayList<>();
+        return Collections.emptyList();
     }
 
 }

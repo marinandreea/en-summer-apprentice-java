@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -29,5 +30,15 @@ public class OrderDTO {
                 + "totalPrice: " + totalPrice + "\n}";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof OrderDTO orderDTO)) return false;
+        return getEventId() == orderDTO.getEventId() && getTicketCategoryId() == orderDTO.getTicketCategoryId() && getNumberOfTickets() == orderDTO.getNumberOfTickets() && Double.compare(orderDTO.getTotalPrice(), getTotalPrice()) == 0 && getTimestamp().equals(orderDTO.getTimestamp());
+    }
 
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEventId(), getTimestamp(), getTicketCategoryId(), getNumberOfTickets(), getTotalPrice());
+    }
 }

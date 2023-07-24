@@ -1,12 +1,13 @@
 package com.endava.practica.controller;
 
+import com.endava.practica.model.Error;
 import com.endava.practica.model.Order;
 import com.endava.practica.model.TicketCategory;
 import com.endava.practica.model.User;
 import com.endava.practica.model.dto.OrderDTO;
-import com.endava.practica.repository.TicketCategoryRepository;
-import com.endava.practica.repository.UserRepository;
 import com.endava.practica.service.OrderService;
+import com.endava.practica.service.TicketCategoryService;
+import com.endava.practica.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,15 +27,15 @@ public class OrderController {
     @Autowired
     private OrderService orderService;
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
     @Autowired
-    private TicketCategoryRepository ticketCategoryRepository;
+    private TicketCategoryService ticketCategoryService;
 
 
     public Order orderDTOToOrder(OrderDTO orderDTO) {
-        Optional<User> user = userRepository.findById(1);
+        Optional<User> user = userService.getUserById(1);
         if (user.isPresent()) {
-            Optional<TicketCategory> ticketCategory = ticketCategoryRepository.findById(orderDTO.getTicketCategoryId());
+            Optional<TicketCategory> ticketCategory = ticketCategoryService.getTicketCategoryById(orderDTO.getTicketCategoryId());
             if (ticketCategory.isPresent()) {
                 Double totalPrice = orderDTO.getNumberOfTickets() * ticketCategory.get().getPrice();
 
@@ -48,7 +49,7 @@ public class OrderController {
 
         }
 
-        return new Order(50000);
+        return new Order(0);
     }
 
     public OrderDTO orderToDTO(Order order) {
@@ -60,7 +61,7 @@ public class OrderController {
                 .totalPrice(order.getTotalPrice()).build();
     }
 
-    @GetMapping("/api/orders")
+    @GetMapping("/allOrders")
     public List<Order> getAllOrders() {
         return orderService.getOrders();
     }
@@ -80,16 +81,18 @@ public class OrderController {
     public ResponseEntity<?> addNewOrder(@RequestBody OrderDTO newOrder) {
 
         Order orderFromDTO = orderDTOToOrder(newOrder);
-        if (orderFromDTO.getOrderID() != 50000) {
-            String response = orderService.createOrder(orderFromDTO, orderToDTO(orderFromDTO));
-            if (response.contains("Error")) {
-                return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        Optional<OrderDTO> orderDTO = Optional.of(new OrderDTO());
+        if (orderFromDTO.getOrderID() != 0) {
+            orderDTO = orderService.createOrder(orderFromDTO, orderToDTO(orderFromDTO));
+            if (orderDTO.isEmpty()) {
+                Error error = new Error("There are not enough tickets left!");
+                return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
             }
-            return new ResponseEntity<>(response, HttpStatus.OK);
         } else {
-
-            return new ResponseEntity<>("Could not create order with this ticket category id!", HttpStatus.NOT_FOUND);
+            Error error = new Error("Could not create order with this ticket category id!");
+            return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>("order:" + orderDTO.get(), HttpStatus.OK);
 
     }
 }

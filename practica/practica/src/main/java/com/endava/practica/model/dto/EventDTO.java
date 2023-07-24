@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Builder
@@ -36,4 +37,15 @@ public class EventDTO {
                 + ticketCategoriesForEvent.toString() + "\n}";
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof EventDTO eventDTO)) return false;
+        return getEventId() == eventDTO.getEventId() && getVenue().equals(eventDTO.getVenue()) && getEventType().equals(eventDTO.getEventType()) && getDescription().equals(eventDTO.getDescription()) && getName().equals(eventDTO.getName()) && getStartDate().equals(eventDTO.getStartDate()) && getEndDate().equals(eventDTO.getEndDate()) && getTicketCategoriesForEvent().equals(eventDTO.getTicketCategoriesForEvent());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEventId(), getVenue(), getEventType(), getDescription(), getName(), getStartDate(), getEndDate(), getTicketCategoriesForEvent());
+    }
 }

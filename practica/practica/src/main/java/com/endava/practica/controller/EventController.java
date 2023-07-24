@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 public class EventController {
@@ -63,18 +64,22 @@ public class EventController {
 
     }
 
-    @GetMapping("/getE/{id}")
-    public Event getE(@PathVariable int id) {
-        return eventService.getEventById(id);
+    @GetMapping("/eventById/{id}")
+    public ResponseEntity<?> getEventById(@PathVariable int id) {
+        Optional<Event> event = eventService.getEventById(id);
+        if (event.isPresent()) {
+            return new ResponseEntity<>(event.get(), HttpStatus.OK);
+        }
+        Error error = new Error("Could not find event with id " + id);
+        return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
     }
 
     @GetMapping("/events")
-    public ResponseEntity<?> getEventsByVenueIdAndEventType(@RequestParam(value = "venueId", required = false) String id, @RequestParam(value = "eventType", required = false) String type) {
+    public ResponseEntity<?> getEventsByVenueIdAndEventType(@RequestParam(value = "venueId", required = false) Integer id, @RequestParam(value = "eventType", required = false) String type) {
 
         List<Event> events = new ArrayList<>();
         if (type == null & id != null) {
-            int id2 = Integer.parseInt(id);
-            events = eventService.getEventsByVenueId(id2);
+            events = eventService.getEventsByVenueId(id);
             if (events.isEmpty()) {
                 Error error = new Error("No event with venue id " + id + " was found!");
                 return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
@@ -86,8 +91,7 @@ public class EventController {
                 return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
             }
         } else if (id != null & type != null) {
-            int id2 = Integer.parseInt(id);
-            events = eventService.getEventsByVenueIdAndEventType(id2, type);
+            events = eventService.getEventsByVenueIdAndEventType(id, type);
             if (events.isEmpty()) {
                 Error error = new Error("No event with venue id " + id + " and event type " + type + " was found!");
                 return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
