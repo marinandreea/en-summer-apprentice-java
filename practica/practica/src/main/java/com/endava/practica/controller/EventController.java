@@ -64,7 +64,7 @@ public class EventController {
 
     }
 
-    @GetMapping("/eventById/{id}")
+    @GetMapping("/events/{id}")
     public ResponseEntity<?> getEventById(@PathVariable int id) {
         Optional<Event> event = eventService.getEventById(id);
         if (event.isPresent()) {

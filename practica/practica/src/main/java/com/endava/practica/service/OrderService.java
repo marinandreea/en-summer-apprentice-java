@@ -29,7 +29,7 @@ public class OrderService {
         return orders;
     }
 
-    public Optional<OrderDTO> createOrder(Order order, OrderDTO orderDTO) {
+    public Optional<Order> createOrder(Order order) {
 
         Optional<Venue> venue = venueRepository.findById(order.getTicketCategory().getEvent().getVenue().getVenueID());
         if (venue.isPresent()) {
@@ -37,8 +37,7 @@ public class OrderService {
             if (newCapacity >= 0) {
                 venue.get().setCapacity(newCapacity);
                 venueRepository.save(venue.get());
-                orderRepository.save(order);
-                return Optional.of(orderDTO);
+                return Optional.of(orderRepository.save(order));
             }
         }
         return Optional.empty();

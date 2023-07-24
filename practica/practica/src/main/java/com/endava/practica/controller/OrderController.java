@@ -49,7 +49,7 @@ public class OrderController {
 
         }
 
-        return new Order(0);
+        return new Order(-1);
     }
 
     public OrderDTO orderToDTO(Order order) {
@@ -66,7 +66,7 @@ public class OrderController {
         return orderService.getOrders();
     }
 
-    @GetMapping("/orders")
+    @GetMapping("/ordersDTO")
     public List<OrderDTO> getOrders() {
         List<Order> orders = orderService.getOrders();
         List<OrderDTO> orderDTOList = new ArrayList<>();
@@ -77,14 +77,15 @@ public class OrderController {
         return orderDTOList;
     }
 
-    @PostMapping("/createOrder")
+    @PostMapping("/orders")
     public ResponseEntity<?> addNewOrder(@RequestBody OrderDTO newOrder) {
 
         Order orderFromDTO = orderDTOToOrder(newOrder);
-        Optional<OrderDTO> orderDTO = Optional.of(new OrderDTO());
-        if (orderFromDTO.getOrderID() != 0) {
-            orderDTO = orderService.createOrder(orderFromDTO, orderToDTO(orderFromDTO));
-            if (orderDTO.isEmpty()) {
+        Optional<Order> order = Optional.of(new Order());
+        System.out.println(orderFromDTO.getOrderID());
+        if (orderFromDTO.getOrderID() != -1) {
+            order = orderService.createOrder(orderFromDTO);
+            if (order.isEmpty()) {
                 Error error = new Error("There are not enough tickets left!");
                 return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
             }
@@ -92,7 +93,8 @@ public class OrderController {
             Error error = new Error("Could not create order with this ticket category id!");
             return new ResponseEntity<>(error, HttpStatus.NOT_FOUND);
         }
-        return new ResponseEntity<>("order:" + orderDTO.get(), HttpStatus.OK);
+        OrderDTO orderDTO= orderToDTO(order.get());
+        return new ResponseEntity<>("order:" + orderDTO, HttpStatus.OK);
 
     }
 }
